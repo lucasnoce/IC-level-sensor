@@ -198,34 +198,34 @@ double readLevelSensor(double speedOfSound){
 
 // 4.2.1 Interpolate
 #ifdef INTERPOLATE_SPEED_SOUND
-double interpolateSpeedOfSound(double meanTemp, double meanUmid){
+double interpolateSpeedOfSound(double meanTemp, double meanHumi){
   double speedOfSound = 0.0;
   
   if (meanTemp >= 35.0){
-    if (meanUmid <= 10.0)
+    if (meanHumi <= 10.0)
       speedOfSound = SpeedOfSoundLUT[0][VEL_SOM_COLS_TEMP-1];
-    else if (meanUmid >= 90.0)
+    else if (meanHumi >= 90.0)
       speedOfSound = SpeedOfSoundLUT[1][VEL_SOM_COLS_TEMP-1];
     else
-      speedOfSound = SpeedOfSoundLUT[0][VEL_SOM_COLS_TEMP-1] + ((SpeedOfSoundLUT[1][VEL_SOM_COLS_TEMP-1] - SpeedOfSoundLUT[0][VEL_SOM_COLS_TEMP-1]) * (meanUmid/100));
+      speedOfSound = SpeedOfSoundLUT[0][VEL_SOM_COLS_TEMP-1] + ((SpeedOfSoundLUT[1][VEL_SOM_COLS_TEMP-1] - SpeedOfSoundLUT[0][VEL_SOM_COLS_TEMP-1]) * (meanHumi/100));
   }
   else if (meanTemp < 10.0){
-    if (meanUmid <= 10.0)
+    if (meanHumi <= 10.0)
       speedOfSound = SpeedOfSoundLUT[0][0];
-    else if (meanUmid >= 90.0)
+    else if (meanHumi >= 90.0)
       speedOfSound = SpeedOfSoundLUT[1][0];
     else
-      speedOfSound = SpeedOfSoundLUT[0][0] + ((SpeedOfSoundLUT[1][0] - SpeedOfSoundLUT[0][0]) * (meanUmid/100));
+      speedOfSound = SpeedOfSoundLUT[0][0] + ((SpeedOfSoundLUT[1][0] - SpeedOfSoundLUT[0][0]) * (meanHumi/100));
   }
   else{
     for (int i=0; i<VEL_SOM_COLS_TEMP; i++){
       if (meanTemp >= (double) (10.0+((double)i/2.0)) && meanTemp < (double) (10.5+((double)i/2.0))){
-        if (meanUmid <= 10.0)
+        if (meanHumi <= 10.0)
           speedOfSound = SpeedOfSoundLUT[0][i];
-        else if (meanUmid >= 90.0)
+        else if (meanHumi >= 90.0)
           speedOfSound = SpeedOfSoundLUT[1][i];
         else
-          speedOfSound = SpeedOfSoundLUT[0][i] + ((SpeedOfSoundLUT[1][i] - SpeedOfSoundLUT[0][i]) * (meanUmid/100));
+          speedOfSound = SpeedOfSoundLUT[0][i] + ((SpeedOfSoundLUT[1][i] - SpeedOfSoundLUT[0][i]) * (meanHumi/100));
         break;
       }
     }
@@ -238,7 +238,7 @@ double interpolateSpeedOfSound(double meanTemp, double meanUmid){
 
 // 4.2.2 Calculate
 #ifdef CALCULATE_SPEED_SOUND
-float calculateSpeedOfSound(float meanTemp, float meanUmid, float meanPres){
+float calculateSpeedOfSound(float meanTemp, float meanHumi, float meanPres){
   double meanTemp_K = meanTemp + 273.15;  // Convert to Kelvin
   meanPres *= 1000.0;                     // Convert to Pa
   
@@ -251,7 +251,7 @@ float calculateSpeedOfSound(float meanTemp, float meanUmid, float meanPres){
   float PSV2 = 33.93711047 - (6343.1645/meanTemp_K);
   float PSV = pow(e,PSV1)*pow(e,PSV2);
 
-  float Xw = (meanUmid*ENH*PSV/meanPres)/100.0;  // Mole fraction of water vapour
+  float Xw = (meanHumi*ENH*PSV/meanPres)/100.0;  // Mole fraction of water vapour
   float Xc = 0.000400;                           // Mole fraction of carbon dioxide
 
   float C1 = 0.603055*meanTemp + 331.5024 - (meanTemp*meanTemp*5.28*pow(10,-4)) + (0.1495874*meanTemp + 51.471935 - (meanTemp*meanTemp*7.82*pow(10,-4)))*Xw;
@@ -295,74 +295,74 @@ double calculateDistanceMedian(uint8_t numReadings, double* reading, double* rea
 // 4.4 EXECUTE MEASUREMENT
 void executeMeasurement(uint16_t numReadings, uint16_t timeInterval){
 
-  /*  Calibration due to Temperature and Umidity:  */
+  /*  Calibration due to Temperature and Humidity:  */
   
   // Readings:
-  bool flagReadTempAndUmid = true;
+  bool flagReadTempAndHumi = true;
 
-  while (flagReadTempAndUmid){
+  while (flagReadTempAndHumi){
     for (int i=0; i<NUM_CALIBRATIONS; i++){
       Temperature[i] = dht.readTemperature();
       delay(100);
-      Umidity[i] = dht.readHumidity();
+      Humidity[i] = dht.readHumidity();
       delay(400);
 
 #ifdef SERIAL_MON_DEBUG
       SerialMon.print("#");
 #endif  // SERIAL_MON_DEBUG
   
-      if (isnan(Temperature[i]) || isnan(Umidity[i]))
+      if (isnan(Temperature[i]) || isnan(Humidity[i]))
         if (i > 0) i--;
         else i = 0;
       else{
         // Mean:
         MeanTemp += (Temperature[i] / NUM_CALIBRATIONS);
-        MeanUmid += (Umidity[i] / NUM_CALIBRATIONS);
+        MeanHumi += (Humidity[i] / NUM_CALIBRATIONS);
       }
     }
   
     // Standard Deviation:
     for (int i=0; i<NUM_CALIBRATIONS; i++){
       StdDevTemp += ((Temperature[i] - MeanTemp) * (Temperature[i] - MeanTemp));
-      StdDevUmid += ((Umidity[i] - MeanUmid) * (Umidity[i] - MeanUmid));
+      StdDevHumi += ((Humidity[i] - MeanHumi) * (Humidity[i] - MeanHumi));
     }
     StdDevTemp = sqrt(StdDevTemp/NUM_CALIBRATIONS);
-    StdDevUmid = sqrt(StdDevUmid/NUM_CALIBRATIONS);
+    StdDevHumi = sqrt(StdDevHumi/NUM_CALIBRATIONS);
 
-    if (StdDevTemp >= MAX_STD_DEV_TEMP || StdDevUmid >= MAX_STD_DEV_UMID){  // read again because there was too much variation
+    if (StdDevTemp >= MAX_STD_DEV_TEMP || StdDevHumi >= MAX_STD_DEV_HUMI){  // read again because there was too much variation
     
 #ifdef SERIAL_MON_DEBUG
       SerialMon.println();
 #endif  // SERIAL_MON_DEBUG
 
-      flagReadTempAndUmid = true;
+      flagReadTempAndHumi = true;
       MeanTemp = 0.0;
-      MeanUmid = 0.0;
+      MeanHumi = 0.0;
       StdDevTemp = 0.0;
-      StdDevUmid = 0.0;
+      StdDevHumi = 0.0;
       for (int i=0; i<NUM_CALIBRATIONS; i++){
         Temperature[i] = 0.0;
-        Umidity[i] = 0.0;
+        Humidity[i] = 0.0;
       }
       delay(1000);  // TODO
     }
-    else flagReadTempAndUmid = false;
+    else flagReadTempAndHumi = false;
   }
 
 #ifdef SERIAL_MON_DEBUG
-  SerialMon.println("\Temperature [*C]\Umidity [%]");
+  SerialMon.println("\Temperature [*C]\Humidity [%]");
   for (int i=0; i<NUM_CALIBRATIONS; i++){
     SerialMon.print(Temperature[i]);
     SerialMon.print("\t");
-    SerialMon.println(Umidity[i]);
+    SerialMon.println(Humidity[i]);
   }
 #endif  // SERIAL_MON_DEBUG
   
   // Speed of Sound determination:
 #ifdef INTERPOLATE_SPEED_SOUND
-  SpeedOfSound = interpolateSpeedOfSound(MeanTemp, MeanUmid);  // Interpolaçao para escolha da Velocidade do Som
+  SpeedOfSound = interpolateSpeedOfSound(MeanTemp, MeanHumi);  // Interpolaçao para escolha da Velocidade do Som
 #else
-  SpeedOfSound = calculateSpeedOfSound(MeanTemp, MeanUmid, MEAN_PRESSURE_ITAJUBA);  // Interpolaçao para escolha da Velocidade do Som
+  SpeedOfSound = calculateSpeedOfSound(MeanTemp, MeanHumi, MEAN_PRESSURE_ITAJUBA);  // Interpolaçao para escolha da Velocidade do Som
 #endif
 
 
@@ -421,8 +421,8 @@ void printResultsSerial(){
   SerialMon.println("\n*****  Calibration Data:  *****");
   SerialMon.print("Mean Temperature (*C):\t"); SerialMon.println(MeanTemp, 2);
   SerialMon.print("Standard Deviation:\t"); SerialMon.println(StdDevTemp, 2);
-  SerialMon.print("\nMean Umidity (%):\t"); SerialMon.println(MeanUmid, 2);
-  SerialMon.print("Standard Deviation:\t"); SerialMon.println(StdDevUmid, 2);
+  SerialMon.print("\nMean Humidity (%):\t"); SerialMon.println(MeanHumi, 2);
+  SerialMon.print("Standard Deviation:\t"); SerialMon.println(StdDevHumi, 2);
   SerialMon.print("\nSpeed of Sound (m/s):\t"); SerialMon.println(SpeedOfSound, 2);
 //  delay(1);
   SerialMon.println("\n*****  Distance Data:  *****");
@@ -492,7 +492,7 @@ void printResultsMQTT(){
   snprintf(pubData, pubDataSize, "");
 
   snprintf(pubData, pubDataSize, "{\"variable\":\"leveldata\",\"value\":\"%i %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %i\"}",
-    WakeUpID, MeanTemp, StdDevTemp, MeanUmid, StdDevUmid, SpeedOfSound, MeanDist, MedianDist, StdDevDist, BatteryLevel);
+    WakeUpID, MeanTemp, StdDevTemp, MeanHumi, StdDevHumi, SpeedOfSound, MeanDist, MedianDist, StdDevDist, BatteryLevel);
   
   mqttClient.publish(MQTT_TOPIC_READ, pubData);
 

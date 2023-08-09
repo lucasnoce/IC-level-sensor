@@ -42,7 +42,7 @@ PubSubClient  mqttClient(MQTT_BROKER, MQTT_PORT, tcpClient);
 /*  *******************  */
 /*  Sensors and System:  */
 
-// DHT sensor (Temperature e Umidity):
+// DHT sensor (Temperature e Humidity):
 DHT dht(DHT_PIN, DHT_TYPE);
 
 // System variables:
@@ -50,12 +50,12 @@ RTC_DATA_ATTR uint8_t WakeUpID;
 
 double SpeedOfSound = 0.0;
 double Temperature[NUM_CALIBRATIONS];
-double Umidity[NUM_CALIBRATIONS];
+double Humidity[NUM_CALIBRATIONS];
 
 double MeanTemp = 0.0;
-double MeanUmid = 0.0;
+double MeanHumi = 0.0;
 double StdDevTemp = 0.0;
-double StdDevUmid = 0.0;
+double StdDevHumi = 0.0;
 
 double MeanDist = 0.0;
 double MedianDist = 0.0;

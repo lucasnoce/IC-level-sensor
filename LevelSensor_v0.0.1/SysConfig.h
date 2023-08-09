@@ -147,13 +147,13 @@
 // 2.3 CONSTANTS AND PARAMS
 
 // 2.3.1 Input and Calibration
-#define NUM_CALIBRATIONS       10     // Number of Temperature/Umidity Readings in calibration process
+#define NUM_CALIBRATIONS       10     // Number of Temperature/Humidity Readings in calibration process
 #define NUM_READINGS           10     // Number of Distance Readings in each measurement
 #define TIME_INTERVAL_READINGS 100    // Time interval in between readings [ms]
 #define NUM_TX_VARIABLES       8      // Number of transmitted variables
 #define MEAN_PRESSURE_ITAJUBA  101.6  // Mean Pressure in Itajuba city[kPa]
 #define MAX_STD_DEV_TEMP       2.0    // Maximum Standard Deviation tolerated in Temperature values
-#define MAX_STD_DEV_UMID       3.0    // Maximum Standard Deviation tolerated in Umidity values
+#define MAX_STD_DEV_HUMI       3.0    // Maximum Standard Deviation tolerated in Humidity values
 
 #define PULSE_WIDTH_US         10     // Minimum pulse width for AJ-SR04M reading
 
