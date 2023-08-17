@@ -34,16 +34,16 @@
 /*    1 NBIOT AND MQTT CONFIG:              */
 
 // 1.1 GSM
-#define GSM_PIN "1010"                          // SIM card PIN
-#define APN     "virtueyes.com.br,virtu,virtu"  // GPRS credentials
+#define GSM_PIN "1010"                           // SIM card PIN
+#define APN     "replace with your credentials"  // GPRS credentials
 #define BAND    28  // TIM Brazil (Uplink: 703-748 MHz, Downlink: 758-803 MHz)
 
 // 1.2 MQTT
 #define MQTT_BROKER     "mqtt.tago.io"
 #define MQTT_PORT       1883
 #define MQTT_ID         "MQTT_1"
-#define MQTT_USERNAME   "levelsensor"
-#define MQTT_PASSWORD   "9213ad58-886a-4bae-87d0-4182c4600dd2"
+#define MQTT_USERNAME   "replace with username"
+#define MQTT_PASSWORD   "replace with password"
 #define MQTT_TOPIC_SYS  "syscheck"
 #define MQTT_TOPIC_READ "readings"
 #define MQTT_TOPIC_TEST "t"
