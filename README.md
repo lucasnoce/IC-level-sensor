@@ -3,6 +3,7 @@ An IoT device designed to measure water levels using an ultrasonic sensing modul
 
 This device was developed as part of a Scientific Initiation Program (Research Scholarship). The final project report can be seen at: <https://drive.google.com/file/d/1ysTlvOdBs60-NlEjqb83ue079nzxteLz/view?usp=sharing>.
 
+
 ## How it works
 The system employs an AJ-SR04M ultrasonic sensing module connected to the ESP32 microcontroller. This module measures the time interval it takes for an ultrasonic wave to travel from the transducer to the water level and back. By calculating the distance based on the time duration, the speed of sound, and dividing the result by 2, the accurate water level is determined. As the speed of sound varies based on factors such as temperature, humidity, and pressure, a DHT31 sensor is incorporated to measure temperature and humidity (pressure is assumed constant). This additional information allows for precise estimation of the speed of sound just before each distance measurement is taken.
 
@@ -14,13 +15,13 @@ The following image shows the device under test.
 
 <img src="https://github.com/lucasnoce/IC-level-sensor/assets/62445590/a2f5373a-8d72-4e88-a297-ce5423b017e0.png" width=50% height=50%>
 
+
 ## Ultrasonic Sensor Testing
 To validate the ultrasonic sensor functionality and capabilities, a series of tests were conducted. For this, the sensor was attached to some water tanks through 3D printed supports. The water level was measured with a measuring tape and by the sensor and the results were compared to verify how far could the sensor take accurate measurements and also to determine if the sensor presented meaningful errors or offset. The results showed that the sensor presents a very low standard deviation between subsequent measurements and that its readings consistently differed from the measuring tape by around 0.2 to 0.3 cm.
 
 The following images show the tests setup.
 
-<img src="https://github.com/lucasnoce/IC-level-sensor/assets/62445590/43e1aafb-87eb-4bf5-ba7e-0a565576eb2f.png" width=50% height=50%>
-<img src="https://github.com/lucasnoce/IC-level-sensor/assets/62445590/1dc228f9-d99c-4069-a7be-b6ec46d956a7.png" width=50% height=50%>
+<img src="https://github.com/lucasnoce/IC-level-sensor/assets/62445590/43e1aafb-87eb-4bf5-ba7e-0a565576eb2f.png" width=35% height=35%> <img src="https://github.com/lucasnoce/IC-level-sensor/assets/62445590/1dc228f9-d99c-4069-a7be-b6ec46d956a7.png" width=50% height=50%>
 
 
 ## NB-IoT Consumption Research
