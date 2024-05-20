@@ -17,8 +17,10 @@ The following image shows the device under test.
 ## Ultrasonic Sensor Testing
 To validate the ultrasonic sensor functionality and capabilities, a series of tests were conducted. For this, the sensor was attached to some water tanks through 3D printed supports. The water level was measured with a measuring tape and by the sensor and the results were compared to verify how far could the sensor take accurate measurements and also to determine if the sensor presented meaningful errors or offset. The results showed that the sensor presents a very low standard deviation between subsequent measurements and that its readings consistently differed from the measuring tape by around 0.2 to 0.3 cm.
 
-![20221125_105805_1](https://github.com/lucasnoce/IC-level-sensor/assets/62445590/43e1aafb-87eb-4bf5-ba7e-0a565576eb2f)
-![Image 1](https://github.com/lucasnoce/IC-level-sensor/assets/62445590/1dc228f9-d99c-4069-a7be-b6ec46d956a7)
+The following images show the tests setup.
+
+<img src="https://github.com/lucasnoce/IC-level-sensor/assets/62445590/43e1aafb-87eb-4bf5-ba7e-0a565576eb2f.png" width=50% height=50%>
+<img src="https://github.com/lucasnoce/IC-level-sensor/assets/62445590/1dc228f9-d99c-4069-a7be-b6ec46d956a7.png" width=50% height=50%>
 
 
 ## NB-IoT Consumption Research
